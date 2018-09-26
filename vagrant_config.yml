@@ -1,0 +1,26 @@
+vm:
+  #box: 'centos/7'
+  #osVersion: 7  
+  box: 'centos/6'
+  osVersion: 6 
+  proxyExists: 'true'
+  infrastructure: 'FXDMS'
+  domainName: '.fxdms.net'  
+  bootstrapperHome: '/vagrant' 
+  workspace:
+    name: 'workspace'
+    env: 'envx'
+    internalip: '192.168.100.101'
+    memory: '2048'
+  master:
+    name: 'kmaster'
+    env: 'envx'
+    internalip: '192.168.100.210'
+    memory: '1024'    
+  worker:
+    numOfNodes: 2
+    env: 'envx'
+    internalbaseip: '192.168.100.20'
+    prefixName: 'kworker0'
+    suffixName: 'lx'
+    memory: '1024' 

@@ -82,19 +82,19 @@ Vagrant.configure("2") do |config|
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://atlas.hashicorp.com/search.
     node.vm.box = vconfig['vm']['box']
-    node.vm.hostname = vconfig['vm']['workspace']['name'] + '-' + ENV['COMPUTERNAME'] + vconfig['vm']['domainName']
+    node.vm.hostname = vconfig['vm']['workspace']['name'] + vconfig['vm']['domainName']
     node.vm.boot_timeout = 900
      
     node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyExists'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
     
     # Create a private network, which allows host-only access to the machine
     # using a specific IP.
-    node.vm.network "private_network", ip: vconfig['vm']['master']['internalip']
+    node.vm.network "private_network", ip: vconfig['vm']['workspace']['internalip']
     
     # Create a public network, which generally matched to bridged network.
     # Bridged networks make the machine appear as another physical device on
     # your network.
-    node.vm.network "public_network"
+    node.vm.network "public_network", :bridge => vconfig['vm']['bridgeNetworkAdapter']
 
     # Provider-specific configuration so you can fine-tune various
     # backing providers for Vagrant. These expose provider-specific options.
@@ -124,7 +124,7 @@ Vagrant.configure("2") do |config|
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://atlas.hashicorp.com/search.
     node.vm.box = vconfig['vm']['box']
-    node.vm.hostname = vconfig['vm']['master']['name'] + '-' + ENV['COMPUTERNAME'] + vconfig['vm']['domainName']
+    node.vm.hostname = vconfig['vm']['master']['name'] + vconfig['vm']['domainName']
      
     node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyExists'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
     
@@ -135,7 +135,7 @@ Vagrant.configure("2") do |config|
     # Create a public network, which generally matched to bridged network.
     # Bridged networks make the machine appear as another physical device on
     # your network.
-    node.vm.network "public_network"
+    node.vm.network "public_network", :bridge => vconfig['vm']['bridgeNetworkAdapter']
 
     # Provider-specific configuration so you can fine-tune various
     # backing providers for Vagrant. These expose provider-specific options.
@@ -168,7 +168,7 @@ Vagrant.configure("2") do |config|
     config.vm.define nodeName do |node|
 
       node.vm.box = vconfig['vm']['box']
-      node.vm.hostname = nodeName.to_s + '-' + ENV['COMPUTERNAME'] + vconfig['vm']['domainName']
+      node.vm.hostname = nodeName.to_s + vconfig['vm']['domainName']
 
       node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyExists'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
     
@@ -179,7 +179,7 @@ Vagrant.configure("2") do |config|
       # Create a public network, which generally matched to bridged network.
       # Bridged networks make the machine appear as another physical device on
       # your network.
-      node.vm.network "public_network"
+      node.vm.network "public_network", :bridge => vconfig['vm']['bridgeNetworkAdapter']
   
       node.vm.provider "virtualbox" do |vb|
         vb.name = nodeName.to_s

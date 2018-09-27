@@ -1,0 +1,9 @@
+Host kmaster
+  User root
+  IdentityFile /root/.ssh/id_rsa_workspace_kmaster_root
+Host kworker01lx
+  User root
+  IdentityFile /root/.ssh/id_rsa_workspace_kworker01lx_root
+Host kworker02lx
+  User root
+  IdentityFile /root/.ssh/id_rsa_workspace_kworker02lx_root

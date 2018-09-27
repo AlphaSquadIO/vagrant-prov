@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo ""
-echo "---> @ Bootstrapping SSH Key Access"
+echo "---> @ Hardening SSH and Bootstrapping VM with SSH Key Access"
 
 BOOTSTRAPPER_HOME=/vagrant
 

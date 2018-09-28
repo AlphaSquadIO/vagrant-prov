@@ -24,4 +24,4 @@ vm:
     internalbaseip: '192.168.100.20'
     prefixName: 'kworker0'
     suffixName: 'lx'
-    memory: '512' 
+    memory: '512'

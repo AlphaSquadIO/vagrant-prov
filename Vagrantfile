@@ -2,7 +2,14 @@
 # vi: set ft=ruby :
 
 require 'yaml'
-vconfig = YAML::load_file("./vagrant_config.yml")
+
+if ENV["USERDOMAIN"] == "FXDMS"
+  vconfig = YAML::load_file("./vagrant_config_work.yml")
+else
+  vconfig = YAML::load_file("./vagrant_config_home.yml")
+end
+
+
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for

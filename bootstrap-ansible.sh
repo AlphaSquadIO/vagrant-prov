@@ -8,7 +8,7 @@ NUM_OF_KWORKERS=${1:-2}
 yum -y install ansible
 
 
-if grep -Fxq "$kmaster" /etc/ansible/hosts
+if grep -q "kmaster" /etc/ansible/hosts
 then
     echo "Configuration already added"
 else

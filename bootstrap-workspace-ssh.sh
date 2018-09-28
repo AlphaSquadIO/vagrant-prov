@@ -44,7 +44,7 @@ for (( c=1; c<=$NUM_OF_KWORKERS; c++ ))
 do  
 	echo "---> @ Generating SSH Key Pair for Workspace to Connect to KWorker0${c}lx using Root Account"
 	ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa_workspace_kworker0${c}lx_root
-	echo "---> @ Copying Root Account's SSH Authorized Key to KMaster"
+	echo "---> @ Copying Root Account's SSH Authorized Key to KWorker0${c}lx"
 	scp -i /vagrant/config/ssh/idkey ~/.ssh/id_rsa_workspace_kworker0${c}lx_root.pub root@kworker0${c}lx:/etc/ssh/authorized_keys/root
 done
 

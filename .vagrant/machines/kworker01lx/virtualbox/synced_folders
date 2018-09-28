@@ -1,1 +1,1 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/mountaineer/HQ/Work/AlphaSquad/vagrant-prov","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"C:/HQ/Work/Code/AlphaSquad/vagrant-prov","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

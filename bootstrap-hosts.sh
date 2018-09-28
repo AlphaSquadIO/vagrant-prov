@@ -3,7 +3,7 @@
 echo ""
 echo "---> @ Configuring Hosts file to Allow Access Across Nodes"
 
-if grep -Fxq "$workspace" /etc/hosts
+if grep -q "192.168.100.101 workspace" /etc/hosts
 then
     echo "Configuration already added"
 else

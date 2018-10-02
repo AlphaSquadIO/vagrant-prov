@@ -37,10 +37,21 @@ then
   echo ""
   echo "-----> @ Setting up CNTLM Proxy"
 
-  rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-1.x86_64.rpm
-  mv /etc/cntlm.conf /etc/cntlm.conf.org
-  cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
-  service cntlmd start
+  if [ $OS_VERSION == '6' ]
+  then
+    rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-1.x86_64.rpm
+    mv /etc/cntlm.conf /etc/cntlm.conf.org
+    cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
+    service cntlmd start
+    chkconfig cntlmd on
+  else
+    rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-10.el7.x86_64.rpm
+    mv /etc/cntlm.conf /etc/cntlm.conf.org
+    cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
+    service cntlm start
+    chkconfig cntlm on
+  fi
+
 
   export http_proxy='http://127.0.0.1:3128'
   export no_proxy="'$HOSTNAME, localhost, source.fxdms.net, build.fxdms.net, *.fxdms.net, 135.101.*, 172.16.*, 192.168.*, 13.198.*'"
@@ -134,5 +145,3 @@ elif [ $OS_VERSION == '7' ]
 then
   systemctl enable ntpd
 fi
-
-

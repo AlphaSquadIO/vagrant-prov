@@ -3,8 +3,7 @@
 echo ""
 echo "---> @ Bootstrapping Kubernetes Cluster"
 
-NUM_OF_KWORKERS=${1:-2}
-BOOTSTRAPPER_HOME=/vagrant
+BOOTSTRAPPER_HOME=/home/vagrant/vagrant-prov
 
 mkdir -p ~/kube-cluster
 
@@ -14,3 +13,6 @@ ansible-playbook -i ~/kube-cluster/hosts ~/kube-cluster/kube-dependencies.yml
 
 cp $BOOTSTRAPPER_HOME/config/kube/master.yml ~/kube-cluster/master.yml
 ansible-playbook -i ~/kube-cluster/hosts ~/kube-cluster/master.yml
+
+cp $BOOTSTRAPPER_HOME/config/kube/workers.yml ~/kube-cluster/workers.yml
+ansible-playbook -i ~/kube-cluster/hosts ~/kube-cluster/workers.yml

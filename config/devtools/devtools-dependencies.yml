@@ -1,0 +1,19 @@
+- hosts: workspace
+
+  connection: local
+
+  tasks:
+   - name: Installing dos2unix
+     yum:
+       name: dos2unix
+       state: present
+
+   - name: Installing telnet
+     yum:
+       name: telnet
+       state: present       
+
+   - name: Installing Git
+     yum:
+       name: git
+       state: present

@@ -4,7 +4,7 @@ echo ""
 echo "---> @ Regenerating SSH Keys for Workspace Access to Nodes in Kubernetes Cluster"
 
 NUM_OF_KWORKERS=${1:-2}
-BOOTSTRAPPER_HOME=/vagrant
+BOOTSTRAPPER_HOME=/home/vagrant/vagrant-prov
 
 echo ""
 echo "---> @ Installing Dependencies"

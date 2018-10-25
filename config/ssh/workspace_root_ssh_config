@@ -1,6 +1,9 @@
 Host kmaster
   User root
   IdentityFile /root/.ssh/id_rsa_workspace_kmaster_root
+Host kmaster
+  User deploy
+  IdentityFile /root/.ssh/id_rsa_workspace_kmaster_deploy
 Host kworker01lx
   User root
   IdentityFile /root/.ssh/id_rsa_workspace_kworker01lx_root

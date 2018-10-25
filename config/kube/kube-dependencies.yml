@@ -1,6 +1,7 @@
 - hosts: all
   become: yes
   tasks:
+
    - name: install Docker
      yum:
        name: docker
@@ -10,14 +11,8 @@
    - name: start Docker
      service:
        name: docker
+       enabled: yes
        state: started
-
-   - name: disable SELinux
-     command: setenforce 0
-
-   - name: disable SELinux on reboot
-     selinux:
-       state: disabled
 
    - name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
      sysctl:
@@ -30,6 +25,16 @@
       name: net.bridge.bridge-nf-call-iptables
       value: 1
       state: present
+
+   - name: Remove swapfile from /etc/fstab
+     mount:
+      name: swap
+      fstype: swap
+      state: absent
+
+   - name: Disable swap
+     command: swapoff -a
+     when: ansible_swaptotal_mb > 0
 
    - name: add Kubernetes' YUM repository
      yum_repository:

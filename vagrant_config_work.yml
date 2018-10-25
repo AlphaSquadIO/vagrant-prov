@@ -1,18 +1,19 @@
 vm:
-  box: 'centos/7'
+  box: 'geerlingguy/centos7'
   osVersion: 7  
   #box: 'centos/6'
   #osVersion: 6 
   proxyExists: 'true'
+  proxyException: '$HOSTNAME, localhost, source.fxdms.net, build.fxdms.net, *.fxdms.net, 135.101.*, 172.16.*, 192.168.*, 13.198.*, kmaster, kworker01lx, kworker02lx, 10.0.2.15'
   infrastructure: 'WORK'
   domainName: '.fxdms.net'
   bridgeNetworkAdapter: 'en0: Wi-Fi (AirPort)'
-  bootstrapperHome: '/vagrant' 
+  bootstrapperHome: '/home/vagrant/vagrant-prov'
   workspace:
     name: 'workspace'
     env: 'envx'
     internalip: '192.168.100.101'
-    memory: '1024'
+    memory: '2048'
   master:
     name: 'kmaster'
     env: 'envx'

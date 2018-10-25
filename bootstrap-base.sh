@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OS_VERSION=$1
-PROXY_EXISTS=$2
+PROXY_EXCEPTION=$2
 BOOTSTRAPPER_HOME=$3
 INFRASTRUCTURE=$4
 
@@ -26,71 +26,73 @@ then
 fi
 
 echo ""
-echo "---> @ Setting SELinux to Permissive"
-setenforce 0
+echo "---> @ Disabling SELinux"
+sed -i 's/=enforcing/=disabled/g' /etc/selinux/config /etc/selinux/config
 
-if [ $PROXY_EXISTS == 'true' ]
+echo ""
+echo "---> @ Setting up Proxy"
+
+echo ""
+echo "-----> @ Setting up CNTLM Proxy"
+
+if [ $OS_VERSION == '6' ]
 then
-  echo ""
-  echo "---> @ Setting up Proxy"
-
-  echo ""
-  echo "-----> @ Setting up CNTLM Proxy"
-
-  if [ $OS_VERSION == '6' ]
-  then
-    rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-1.x86_64.rpm
-    mv /etc/cntlm.conf /etc/cntlm.conf.org
-    cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
-    service cntlmd start
-    chkconfig cntlmd on
-  else
-    rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-10.el7.x86_64.rpm
-    mv /etc/cntlm.conf /etc/cntlm.conf.org
-    cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
-    service cntlm start
-    chkconfig cntlm on
-  fi
-
-
-  export http_proxy='http://127.0.0.1:3128'
-  export no_proxy="'$HOSTNAME, localhost, source.fxdms.net, build.fxdms.net, *.fxdms.net, 135.101.*, 172.16.*, 192.168.*, 13.198.*'"
-
-  echo "export http_proxy=$http_proxy" > /etc/profile.d/proxy.sh
-  echo "export https_proxy=$http_proxy" >> /etc/profile.d/proxy.sh
-  echo "export no_proxy=$no_proxy" >> /etc/profile.d/proxy.sh
-  echo "export HTTP_PROXY=$http_proxy" >> /etc/profile.d/proxy.sh
-  echo "export HTTPS_PROXY=$http_proxy" >> /etc/profile.d/proxy.sh
-  echo "export NO_PROXY=$no_proxy" >> /etc/profile.d/proxy.sh
-  echo "export RSYNC_PROXY=$http_proxy" >> /etc/profile.d/proxy.sh
-  echo "export SSL_CERT_FILE=/etc/pki/tls/cert.pem" >> /etc/profile.d/proxy.sh
-
-  . /etc/profile.d/proxy.sh
-
-  echo "http_proxy=$http_proxy" > /etc/environment
-  echo "https_proxy=$http_proxy" >> /etc/environment
-  echo "no_proxy=$no_proxy" >> /etc/environment
-  echo "HTTP_PROXY=$http_proxy" >> /etc/environment
-  echo "HTTPS_PROXY=$http_proxy" >> /etc/environment
-  echo "NO_PROXY=$no_proxy" >> /etc/environment
-  echo "SSL_CERT_FILE=/etc/pki/tls/cert.pem" >> /etc/environment
-
-  echo "proxy=$http_proxy" >> /etc/yum.conf
-  echo "timeout=360" >> /etc/yum.conf
-
-  echo ""
-  echo "-----> @ Adding CA Certificates (and ROOT) to CA Truststore"
-  yum -y install ca-certificates
-  update-ca-trust enable
-
-  openssl x509 -inform der -in $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/ROOT-CA.cer -out  $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/ROOT-CA.pem
-  openssl x509 -inform der -in $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/INTERMEDIATE-CA.cer -out $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/INTERMEDIATE-CA.pem
-  cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/ROOT-CA.pem /etc/pki/ca-trust/source/anchors/
-  update-ca-trust extract
-  cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/INTERMEDIATE-CA.pem /etc/pki/ca-trust/source/anchors
-  update-ca-trust extract
-
+  rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-1.x86_64.rpm
+  mv /etc/cntlm.conf /etc/cntlm.conf.org
+  cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
+  service cntlmd start
+  chkconfig cntlmd on
+else
+  rpm -ivh $BOOTSTRAPPER_HOME/dependencies/proxy/cntlm-0.92.3-10.el7.x86_64.rpm
+  mv /etc/cntlm.conf /etc/cntlm.conf.org
+  cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/cntlm.conf /etc/cntlm.conf
+  service cntlm start
+  chkconfig cntlm on
 fi
+
+
+export http_proxy='http://127.0.0.1:3128'
+export no_proxy="'$PROXY_EXCEPTION'"
+
+echo "export http_proxy=$http_proxy" > /etc/profile.d/proxy.sh
+echo "export https_proxy=$http_proxy" >> /etc/profile.d/proxy.sh
+echo "export no_proxy=$no_proxy" >> /etc/profile.d/proxy.sh
+echo "export HTTP_PROXY=$http_proxy" >> /etc/profile.d/proxy.sh
+echo "export HTTPS_PROXY=$http_proxy" >> /etc/profile.d/proxy.sh
+echo "export NO_PROXY=$no_proxy" >> /etc/profile.d/proxy.sh
+echo "export RSYNC_PROXY=$http_proxy" >> /etc/profile.d/proxy.sh
+echo "export SSL_CERT_FILE=/etc/pki/tls/cert.pem" >> /etc/profile.d/proxy.sh
+
+. /etc/profile.d/proxy.sh
+
+echo "http_proxy=$http_proxy" > /etc/environment
+echo "https_proxy=$http_proxy" >> /etc/environment
+echo "no_proxy=$no_proxy" >> /etc/environment
+echo "HTTP_PROXY=$http_proxy" >> /etc/environment
+echo "HTTPS_PROXY=$http_proxy" >> /etc/environment
+echo "NO_PROXY=$no_proxy" >> /etc/environment
+echo "SSL_CERT_FILE=/etc/pki/tls/cert.pem" >> /etc/environment
+
+echo "proxy=$http_proxy" >> /etc/yum.conf
+echo "timeout=360" >> /etc/yum.conf
+
+mkdir -p /etc/systemd/system/docker.service.d
+echo "[Service]" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+echo 'Environment="HTTP_PROXY='$http_proxy'" "NO_PROXY='$no_proxy'"' >> /etc/systemd/system/docker.service.d/http-proxy.conf
+echo 'Environment="HTTPS_PROXY='$http_proxy'" "NO_PROXY='$no_proxy'"' >> /etc/systemd/system/docker.service.d/http-proxy.conf
+
+echo ""
+echo "-----> @ Adding CA Certificates (and ROOT) to CA Truststore"
+yum -y install ca-certificates
+update-ca-trust enable
+
+openssl x509 -inform der -in $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/ROOT-CA.cer -out  $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/ROOT-CA.pem
+openssl x509 -inform der -in $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/INTERMEDIATE-CA.cer -out $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/INTERMEDIATE-CA.pem
+cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/ROOT-CA.pem /etc/pki/ca-trust/source/anchors/
+update-ca-trust extract
+cp $BOOTSTRAPPER_HOME/dependencies/proxy/config/$INFRASTRUCTURE/ssl/INTERMEDIATE-CA.pem /etc/pki/ca-trust/source/anchors
+update-ca-trust extract
+
 
 echo ""
 echo "---> @ Cleaning out any incomplete yum transactions"

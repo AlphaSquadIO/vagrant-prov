@@ -1,13 +1,6 @@
 #!/bin/bash
 
-if grep -Fxq "$workspace" /etc/hosts
-then
-    echo "Configuration already added"
-else
-    echo "Configuration NOT Yet added"
-    echo '192.168.100.101 workspace' >> /etc/hosts
-	echo '192.168.100.210 kmaster' >> /etc/hosts
-	echo '192.168.100.201 kworker01lx' >> /etc/hosts
-	echo '192.168.100.202 kworker02lx' >> /etc/hosts
-fi
-
+yum install dkms gcc make kernel-devel bzip2 binutils patch libgomp glibc-headers glibc-devel kernel-headers
+mkdir -p /media/cdrom
+mount /dev/scd0 /media/cdrom
+sh /media/cdrom/VBoxLinuxAdditions.run

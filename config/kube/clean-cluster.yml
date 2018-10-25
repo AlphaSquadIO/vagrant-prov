@@ -1,0 +1,69 @@
+- hosts: master
+  become: yes
+  tasks:
+    - name: Removes cluster_initialized.txt
+      file:
+        path: $HOME/cluster_initialized.txt
+        state: absent
+
+    - name: Removes pod_network_setup.txt
+      become: yes
+      become_user: deploy
+      file:
+        path: $HOME/pod_network_setup.txt
+        state: absent
+        
+    - name: Removes pod_network_removal.txt
+      become: yes
+      become_user: deploy
+      file:
+        path: $HOME/pod_network_removal.txt
+        state: absent
+
+    - name: Removes Pod network
+      become: yes
+      become_user: deploy
+      shell: kubectl delete -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n') >> pod_network_removal.txt
+      args:
+        chdir: $HOME
+        creates: pod_network_removal.txt
+
+    - name: Deletes cluster
+      shell: kubeadm reset -f
+- hosts: workers
+  become: yes
+  tasks:
+    - name: Removes node_joined.txt
+      file:
+        path: $HOME/node_joined.txt
+        state: absent
+
+    - name: Stops kubelet
+      service:
+        name: kubelet
+        state: stopped
+
+    - name: Removes kubelet
+      yum:
+        name: kubelet
+        state: absent
+
+    - name: Removes kubeadm
+      yum:
+        name: kubeadm
+        state: absent
+
+    - name: Removes kubelet directory
+      file:
+        path: /var/lib/kubelet
+        state: absent
+
+    - name: Removes kubernetes
+      file:
+        path: /etc/kubernetes
+        state: absent
+
+    - name: Removes cni
+      file:
+        path: /etc/cni
+        state: absent         

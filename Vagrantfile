@@ -91,8 +91,11 @@ Vagrant.configure("2") do |config|
     node.vm.box = vconfig['vm']['box']
     node.vm.hostname = vconfig['vm']['workspace']['name'] + vconfig['vm']['domainName']
     node.vm.boot_timeout = 900
+    # Uncomment out following line, then run 'vagrant reload' to map folders on host to guest
+    node.vm.synced_folder "./", "/home/vagrant/vagrant-prov"
+    node.vm.synced_folder "../workspace", "/home/vagrant/workspace"
      
-    node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyExists'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
+    node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyException'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
     
     # Create a private network, which allows host-only access to the machine
     # using a specific IP.
@@ -132,8 +135,13 @@ Vagrant.configure("2") do |config|
     # boxes at https://atlas.hashicorp.com/search.
     node.vm.box = vconfig['vm']['box']
     node.vm.hostname = vconfig['vm']['master']['name'] + vconfig['vm']['domainName']
+    node.vm.boot_timeout = 900
+    # Uncomment out following line, then run 'vagrant reload' to map folders on host to guest
+    node.vm.synced_folder "./", "/home/vagrant/vagrant-prov"
+    node.vm.synced_folder "../workspace", "/home/vagrant/workspace"
+
      
-    node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyExists'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
+    node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyException'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
     
     # Create a private network, which allows host-only access to the machine
     # using a specific IP.
@@ -176,8 +184,12 @@ Vagrant.configure("2") do |config|
 
       node.vm.box = vconfig['vm']['box']
       node.vm.hostname = nodeName.to_s + vconfig['vm']['domainName']
+      node.vm.boot_timeout = 900
+      # Uncomment out following line, then run 'vagrant reload' to map folders on host to guest
+      node.vm.synced_folder "./", "/home/vagrant/vagrant-prov"
+      node.vm.synced_folder "../workspace", "/home/vagrant/workspace"
 
-      node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyExists'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
+      node.vm.provision :shell, path: "bootstrap-base.sh", args: [vconfig['vm']['osVersion'],vconfig['vm']['proxyException'],vconfig['vm']['bootstrapperHome'],vconfig['vm']['infrastructure']]
     
       # Create a private network, which allows host-only access to the machine
       # using a specific IP.

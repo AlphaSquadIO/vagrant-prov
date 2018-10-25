@@ -1,0 +1,2 @@
+[workspaces]
+workspace ansible_host=workspace ansible_user=root

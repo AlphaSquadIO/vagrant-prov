@@ -91,8 +91,11 @@ bootstrap-ssh for all
 	- ssh -i config/ssh/idkey root@workspace
 
 #3
-bootstrap-workspace-ssh on workspace
-test
+- bootstrap-workspace-ssh on workspace
+- test
+	- ssh root@kmaster
+	- ssh root@kworker01lx
+	- ssh root@kworker02lx
 
 bootstrap-ansible on workspace
 

@@ -1,0 +1,61 @@
+- hosts: workspace
+  vars:
+    proxyException: "{{ lookup('env','no_proxy') }}"
+    linux_desktop: kde
+
+  connection: local
+
+  roles:
+    - role: geerlingguy.java
+      when: "ansible_os_family == 'RedHat'"
+      java_packages:
+        - java-1.8.0-openjdk
+    - role: pppontusw.ansible-role-linux-desktop
+    - role: gantsign.visual-studio-code
+      users:
+        - username: vagrant
+          visual_studio_code_extensions:
+            - streetsidesoftware.code-spell-checker
+            - wholroyd.jinja
+            - ms-python.python
+
+  tasks:
+  
+   - name: Installing NodeJs
+     yum:
+       name: nodejs
+       state: present
+
+   - name: Installing NPM
+     yum:
+       name: npm
+       state: present
+
+   - name: Installing Maven
+     yum:
+       name: maven
+       state: present
+
+   - name: Creating .m2 directory
+     file:
+        path: /root/.m2
+        state: directory
+        mode: 0755
+
+   - template:
+      src: /root/vagrant/config/devtools/settings.xml.j2
+      dest: /root/.m2/settings.xml
+      owner: vagrant
+      mode: 0644
+
+   - name: install Docker
+     yum:
+       name: docker
+       state: present
+       update_cache: true
+
+   - name: start Docker
+     service:
+       name: docker
+       enabled: yes
+       state: started

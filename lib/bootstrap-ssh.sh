@@ -3,7 +3,7 @@
 echo ""
 echo "---> @ Hardening SSH and Bootstrapping VM with SSH Key Access"
 
-BOOTSTRAPPER_HOME=/vagrant
+BOOTSTRAPPER_HOME=/home/vagrant/vagrant-prov
 
 echo ""
 echo "---> @ Installing Dependencies"

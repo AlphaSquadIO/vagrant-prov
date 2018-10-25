@@ -3,16 +3,17 @@ vm:
   osVersion: 7  
   #box: 'centos/6'
   #osVersion: 6 
-  proxyExists: 'false'
+  proxyExists: 'true'
+  proxyException: '*'
   infrastructure: 'HOME'
   domainName: '.bumblebee.local'
   bridgeNetworkAdapter: 'en0: Wi-Fi (AirPort)'
-  bootstrapperHome: '/vagrant' 
+  bootstrapperHome: '/home/vagrant/vagrant-prov' 
   workspace:
     name: 'workspace'
     env: 'envx'
     internalip: '192.168.100.101'
-    memory: '512'
+    memory: '2048'
   master:
     name: 'kmaster'
     env: 'envx'

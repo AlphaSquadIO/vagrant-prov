@@ -12,50 +12,84 @@
         - java-1.8.0-openjdk
     - role: pppontusw.ansible-role-linux-desktop
     - role: gantsign.visual-studio-code
-      users:
-        - username: vagrant
-          visual_studio_code_extensions:
-            - streetsidesoftware.code-spell-checker
-            - wholroyd.jinja
-            - ms-python.python
 
   tasks:
-  
-   - name: Installing NodeJs
-     yum:
-       name: nodejs
-       state: present
+    - name: Upgrade all packages
+      yum: name=* state=latest
 
-   - name: Installing NPM
-     yum:
-       name: npm
-       state: present
+    - name: Installing NodeJs
+      yum:
+        name: nodejs
+        state: present
 
-   - name: Installing Maven
-     yum:
-       name: maven
-       state: present
+    - name: Installing NPM
+      yum:
+        name: npm
+        state: present
 
-   - name: Creating .m2 directory
-     file:
+    - name: Installing Maven
+      yum:
+        name: maven
+        state: present
+
+    - name: Creating .m2 directory
+      file:
         path: /root/.m2
         state: directory
         mode: 0755
 
-   - template:
-      src: /root/vagrant/config/devtools/settings.xml.j2
-      dest: /root/.m2/settings.xml
-      owner: vagrant
-      mode: 0644
+    - template:
+        src: /home/vagrant/vagrant-prov/config/devtools/settings.xml.j2
+        dest: /root/.m2/settings.xml
+        owner: vagrant
+        mode: 0644
 
-   - name: install Docker
-     yum:
-       name: docker
-       state: present
-       update_cache: true
+    - name: Check if Docker is installed
+      command: systemctl status docker
+      register: docker_check
+      ignore_errors: yes
 
-   - name: start Docker
-     service:
-       name: docker
-       enabled: yes
-       state: started
+    - name: Download the Docker installer
+      get_url:
+        url: https://get.docker.com/
+        dest: /root/install_docker.sh
+        mode: 0700
+      when: docker_check.stderr.find('service could not be found') != -1
+
+    - name: Install Docker
+      shell: /root/install_docker.sh
+      when: docker_check.stderr.find('service could not be found') != -1
+
+    - name: Remove the Docker installer file.
+      file:
+        state: absent
+        path: /root/install_docker.sh
+
+    - name: Enable the Docker daemon in systemd
+      systemd:
+        name: docker
+        enabled: yes
+        masked: no
+
+    - name: Start the Docker daemon
+      systemd:
+        name: docker
+        state: started
+        masked: no
+
+    - name: Check if Docker Compose is installed
+      command: docker-compose --version
+      register: docker_compose_check
+      ignore_errors: yes
+
+    - name: Download and install Docker Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64
+        dest: /usr/bin/docker-compose
+        mode: 0755
+      when:
+        - docker_compose_check.msg is defined
+        - docker_compose_check.msg.find('No such file or directory') != -1
+
+    - name: Setting password for user Vagrant
+      user: name=vagrant password=$1$abc123$g/Wgu7Hw6NGorEYhYYz2Y. # openssl passwd -salt <salt> -1 <plaintext>

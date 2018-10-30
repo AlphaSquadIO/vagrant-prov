@@ -1,5 +1,5 @@
 - src: geerlingguy.java
-  version: latest
+  version: master
 - name: pppontusw.ansible-role-linux-desktop
   src: https://github.com/pppontusw/ansible-role-linux-desktop
 - src: gantsign.visual-studio-code

@@ -1,0 +1,1 @@
+{"virtualbox":{"/home/vagrant/vagrant-prov":{"guestpath":"/home/vagrant/vagrant-prov","hostpath":"C:/HQ/Work/Code/AlphaSquad/vagrant-prov","disabled":false,"__vagrantfile":true},"/home/vagrant/workspace":{"guestpath":"/home/vagrant/workspace","hostpath":"C:/HQ/Work/Code/AlphaSquad/workspace","disabled":false,"__vagrantfile":true}}}

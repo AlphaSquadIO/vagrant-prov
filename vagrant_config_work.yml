@@ -1,5 +1,5 @@
 vm:
-  box: 'generic/centos7'
+  box: 'centos/7'
   osVersion: 7  
   #box: 'centos/6'
   #osVersion: 6 

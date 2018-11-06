@@ -1,48 +1,12 @@
 - hosts: workspace
   vars:
     proxyException: "{{ lookup('env','no_proxy') }}"
-    linux_desktop: kde
 
   connection: local
-
-  roles:
-    - role: geerlingguy.java
-      when: "ansible_os_family == 'RedHat'"
-      java_packages:
-        - java-1.8.0-openjdk
-    - role: pppontusw.ansible-role-linux-desktop
-    - role: gantsign.visual-studio-code
 
   tasks:
     - name: Upgrade all packages
       yum: name=* state=latest
-
-    - name: Installing NodeJs
-      yum:
-        name: nodejs
-        state: present
-
-    - name: Installing NPM
-      yum:
-        name: npm
-        state: present
-
-    - name: Installing Maven
-      yum:
-        name: maven
-        state: present
-
-    - name: Creating .m2 directory
-      file:
-        path: /root/.m2
-        state: directory
-        mode: 0755
-
-    - template:
-        src: /home/vagrant/vagrant-prov/config/devtools/settings.xml.j2
-        dest: /root/.m2/settings.xml
-        owner: vagrant
-        mode: 0644
 
     - name: Check if Docker is installed
       command: systemctl status docker
@@ -90,6 +54,3 @@
       when:
         - docker_compose_check.msg is defined
         - docker_compose_check.msg.find('No such file or directory') != -1
-
-    - name: Setting password for user Vagrant
-      user: name=vagrant password=$1$abc123$g/Wgu7Hw6NGorEYhYYz2Y. # openssl passwd -salt <salt> -1 <plaintext>
